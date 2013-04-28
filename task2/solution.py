@@ -1,14 +1,10 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 
 def groupby(func, seq):
-    result = {}
+    result = defaultdict(list)
     for element in seq:
-        key = func(element)
-        if key not in result.keys():
-            result[key] = [element]
-        else:
-            result[key].append(element)
+        result[func(element)].append(element)
     return result
 
 
@@ -30,9 +26,12 @@ def zip_with(func, *iterables):
 def cache(func, cache_size):
     store = OrderedDict()
 
+    if cache_size <= 0:
+        return func
+
     def cached_function(*args):
         if args not in store:
-            if len(store) - 1 > cache_size:
+            if len(store) >= cache_size:
                 store.popitem(last=False)
             store[args] = func(*args)
         return store[args]
