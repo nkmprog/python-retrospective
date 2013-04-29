@@ -15,23 +15,21 @@ class Person():
         if isinstance(self.mother, Person):
             self.mother.kids.append(self)
 
-    def get_sisters(self):
-        sisters = []
+    def _get_siblings(self, gender):
+        siblings = []
         for parent in [self.father, self.mother]:
             if isinstance(parent, Person):
-                sisters += list(
-                    filter(lambda child: child.gender == 'F' and child != self,
+                siblings += list(
+                    filter(lambda child:
+                           child.gender == gender and child != self,
                            parent.kids))
-        return list(set(sisters))
+        return list(set(siblings))
+
+    def get_sisters(self):
+        return self._get_siblings(gender='F')
 
     def get_brothers(self):
-        brothers = []
-        for parent in [self.father, self.mother]:
-            if isinstance(parent, Person):
-                brothers += list(
-                    filter(lambda child: child.gender == 'M' and child != self,
-                           parent.kids))
-        return list(set(brothers))
+        return self._get_siblings(gender='M')
 
     def children(self, gender=None):
         if gender is not None:
